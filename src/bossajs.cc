@@ -183,9 +183,16 @@ NAN_MODULE_INIT(Bossa::Init) {
     Nan::SetPrototypeMethod(ctor, "verify", Verify);
     Nan::SetPrototypeMethod(ctor, "write", Write);
 
+    Isolate *isolate = Isolate::GetCurrent();
+
+    Local<Context> ctx = isolate->GetCurrentContext();
+
     // Export class
-    target->Set(L("Bossa"), ctor->GetFunction());
-    target->Set(L("default"), ctor->GetFunction());
+
+    if (!ctor->GetFunction(ctx).IsEmpty()) {
+        target->Set(L("Bossa"), ctor->GetFunction(ctx).ToLocalChecked());
+        target->Set(L("default"), ctor->GetFunction(ctx).ToLocalChecked());
+    }
 }
 
 
